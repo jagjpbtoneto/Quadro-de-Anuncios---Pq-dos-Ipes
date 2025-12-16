@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quadro de Reuniões - Congregação Parque dos Ipês</title>
+    <style>
+        :root {
+            --primary-green: #075e54;
+            --light-green: #128c7e;
+            --primary-blue: #2c5aa0;
+            --light-blue: #3a7bd5;
+            --background: #ece5dd;
+            --text-dark: #333;
+            --text-light: #666;
+            --white: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        body {
+            background: var(--background);
+            color: var(--text-dark);
+            padding: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        
+        .whatsapp-container {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+            color: white;
+            padding: 20px 15px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 22px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .header h2 {
+            font-size: 16px;
+            font-weight: 400;
+            opacity: 0.95;
+            margin-bottom: 10px;
+        }
+        
+        .week-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .section {
+            padding: 18px 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .section:last-child {
+            border-bottom: none;
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: var(--primary-blue);
+            font-size: 16px;
+            font-weight: 600;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e3f2fd;
+        }
+        
+        .section-icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+        
+        /* Card de Reunião */
+        .meeting-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--light-blue);
+        }
+        
+        .meeting-card.highlight {
+            background: #e8f5e9;
+            border-left: 4px solid var(--primary-green);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(7, 94, 84, 0.2); }
+            70% { box-shadow: 0 0 0 6px rgba(7, 94, 84, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(7, 94, 84, 0); }
+        }
+        
+        .meeting-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .meeting-day {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--primary-blue);
+        }
+        
+        .meeting-time {
+            background: var(--primary-green);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .meeting-details {
+            margin-top: 8px;
+        }
+        
+        .detail-row {
+            display: flex;
+            margin-bottom: 8px;
+            font-size: 14px;
+            align-items: flex-start;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            min-width: 100px;
+            color: var(--primary-blue);
+        }
+        
+        .detail-value {
+            color: var(--text-dark);
+            flex: 1;
+        }
+        
+        /* Tabela de Designações */
+        .assignments-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        
+        .assignments-table th {
+            background-color: #e3f2fd;
+            color: var(--primary-blue);
+            padding: 8px 10px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #bbdefb;
+        }
+        
+        .assignments-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .assignments-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .time-badge {
+            display: inline-block;
+            background: #e8f5e9;
+            color: var(--primary-green);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 5px;
+        }
+        
+        /* Grid de Serviços */
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 10px;
+        }
+        
+        .service-item {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e9ecef;
+        }
+        
+        .service-icon {
+            font-size: 20px;
+            color: var(--light-blue);
+            margin-bottom: 5px;
+        }
+        
+        .service-name {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 3px;
+        }
+        
+        .service-person {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        /* Botão WhatsApp */
+        .whatsapp-button {
+            display: block;
+            background: #25d366;
+            color: white;
+            text-align: center;
+            padding: 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(37, 211, 102, 0.2);
+        }
+        
+        .whatsapp-button:hover {
+            background: #1da851;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(37, 211, 102, 0.3);
+        }
+        
+        .whatsapp-button i {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #f8f9fa;
+            padding: 15px;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 12px;
+            border-top: 1px solid #eee;
+        }
+        
+        .footer a {
+            color: var(--light-blue);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .auto-update {
+            margin-top: 10px;
+            font-size: 11px;
+            color: #888;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            .section {
+                padding: 15px 12px;
+            }
+            
+            .service-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .detail-row {
+                flex-direction: column;
+                margin-bottom: 10px;
+            }
+            
+            .detail-label {
+                min-width: auto;
+                margin-bottom: 2px;
+            }
+            
+            .assignments-table {
+                font-size: 13px;
+            }
+        }
+        
+        /* Utilitários */
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 5px;
+        }
+        
+        .badge-new {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .badge-cleaning {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+        
+        .badge-important {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, #ddd, transparent);
+            margin: 15px 0;
+        }
+        
+        .reminder-box {
+            background: #e8f5e9;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid var(--primary-green);
+            font-size: 14px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="whatsapp-container">
+        <!-- Cabeçalho -->
+        <div class="header">
+            <h1>📅 QUADRO DE REUNIÕES</h1>
+            <h2>Congregação Parque dos Ipês - Jaguariúna SP</h2>
+            <div class="week-badge">
+                <i class="fas fa-calendar-week"></i> DEZEMBRO 2025 / JANEIRO 2026
+            </div>
+        </div>
+        
+        <!-- Seção 1: Reuniões de Domingo -->
+        <div class="section">
+            <div class="section-title">
+                <div class="section-icon">🎤</div>
+                <span>REUNIÕES DE DOMINGO</span>
+            </div>
+            
+            <!-- 7 de dezembro -->
+            <div class="meeting-card highlight">
+                <div class="meeting-header">
+                    <div class="meeting-day">DOMINGO • 07/12/2025</div>
+                    <div class="meeting-time">🕘 09:30</div>
+                </div>
+                
+                <div class="meeting-details">
+                    <div class="detail-row">
+                        <div class="detail-label">🎙️ Discurso:</div>
+                        <div class="detail-value">
+                            <strong>"Será que os cristãos precisam guardar o sábado?"</strong>
+                            <span class="time-badge">30 min</span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <div class="detail-label">👨‍🏫 Palestrante:</div>
+                        <div class="detail-value">Maurício Timóteo</div>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <div class="detail-label">📍 Local:</div>
+                        <div class="detail-value">Parque dos Ipês - Jaguariúna SP</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 14 de dezembro -->
+            <div class="meeting-card">
+                <div class="meeting-header">
+                    <div class="meeting-day">DOMINGO • 14/12/2025</div>
+                    <div class="meeting-time">🕘 09:30</div>
+                </div>
+                
+                <div class="meeting-details">
+                    <div class="detail-row">
+                        <div class="detail-label">🎙️ Discurso:</div>
+                        <div class="detail-value">
+                            <strong>"Quem está qualificado para governar a humanidade?"</strong>
+                            <span class="time-badge">30 min</span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <div class="detail-label">👨‍🏫 Palestrante:</div>
+                        <div class="detail-value">Kleber Piza</div>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <div class="detail-label">📍 Local:</div>
+                        <div class="detail-value">Jardim Triunfo - Pedreira SP</div>
+                    </div>
+                </div>
+                
+                <div style="background: #fff3cd; padding: 8px; border-radius: 6px; margin-top: 10px; font-size: 13px;">
+                    <strong>📅 Discurso Fora:</strong> Sábado, 13/12 - 19:00<br>
+                    <strong>🎙️ Palestrante:</strong> Ruan C. Dias #54<br>
+                    <strong>📍 Local:</strong> Jardim Triunfo - Pedreira SP
+                </div>
+            </div>
+        </div>
+        
+        <!-- Seção 2: Próximas Reuniões -->
+        <div class="section">
+            <div class="section-title">
+                <div class="section-icon">📅</div>
+                <span>PRÓXIMAS REUNIÕES</span>
+            </div>
+            
+            <table class="assignments-table">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Discurso</th>
+                        <th>Palestrante</th>
+                        <th>Local</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>21/12/2025</td>
+                        <td><strong>"Você ama os prazeres ou a Deus?"</strong> <span class="time-badge">30 min</span></td>
+                        <td>William Monteiro</td>
+                        <td>Jardim Triunfo - Pedreira SP</td>
+                    </tr>
+                    <tr>
+                        <td>28/12/2025</td>
+                        <td><strong>"Sirva a Jeová com um coração alegre"</strong> <span class="time-badge">30 min</span></td>
+                        <td>Michel Teixeira</td>
+                        <td>Jardim Triunfo - Pedreira SP</td>
+                    </tr>
+                    <tr>
+                        <td>04/01/2026</td>
+                        <td><strong>"Onde encontrar ajuda em tempos de aflição?"</strong> <span class="time-badge">30 min</span></td>
+                        <td>Celso J. Costa</td>
+                        <td>Parque dos Ipês - Jaguariúna SP</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div style="margin-top: 15px;">
+                <div class="badge badge-important">DISCURSOS FORA</div>
+                <div style="font-size: 13px; margin-top: 5px;">
+                    • 20/12: Marcos Santos #104 - Jardim Triunfo - Pedreira SP (19:00)<br>
+                    • 27/12: Robson Modesto #11 - Jardim Triunfo - Pedreira SP (19:00)<br>
+                    • 03/01: Eduardo Gabriel #79 - Jardim Alvorada - Cosmópolis SP (19:00)
+                </div>
+            </div>
+        </div>
+        
+        <!-- Seção 3: Janeiro 2026 -->
+        <div class="section">
+            <div class="section-title">
+                <div class="section-icon">🗓️</div>
+                <span>JANEIRO 2026</span>
+            </div>
+            
+            <table class="assignments-table">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Programa</th>
+                        <th>Responsável</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>11/01/2026</td>
+                        <td>Presidente de A Sentinela</td>
+                        <td>Marcos Santos</td>
+                    </tr>
+                    <tr>
+                        <td>18/01/2026</td>
+                        <td><strong>"Porque os cristãos verdadeiros tem que ser diferentes?"</strong> <span class="time-badge">30 min</span></td>
+                        <td>Jader Brum<br><small>Superintendente de circuito</small></td>
+                    </tr>
+                    <tr>
+                        <td>18/01/2026</td>
+                        <td>Discurso Final <span class="time-badge">30 min</span></td>
+                        <td>Jader Brum<br><small>Superintendente de circuito</small></td>
+                    </tr>
+                    <tr>
+                        <td>25/01/2026</td>
+                        <td>Não designado</td>
+                        <td>Não designado<br><small>Jardim Alvorada - Cosmópolis SP</small></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div style="background: #e3f2fd; padding: 10px; border-radius: 8px; margin-top: 10px; font-size: 13px;">
+                <strong>📅 Discurso Fora 24/01:</strong> Marcos Santos #167 - Jardim Alvorada - Cosmópolis SP (19:00)
+            </div>
+        </div>
+        
+        <!-- Seção 4: Fevereiro 2026 -->
+        <div class="section">
+            <div class="section-title">
+                <div class="section-icon">🗓️</div>
+                <span>FEVEREIRO 2026</span>
+            </div>
+            
+            <table class="assignments-table">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Programa</th>
+                        <th>Responsável</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>01/02/2026</td>
+                        <td>Presidente de A Sentinela</td>
+                        <td>Marcos Santos</td>
+                    </tr>
+                    <tr>
+                        <td>08/02/2026</td>
+                        <td>Presidente de A Sentinela</td>
+                        <td>Marcos Santos</td>
+                    </tr>
+                    <tr>
+                        <td>15/02/2026</td>
+                        <td><strong>"Não caia nas armadilhas de Satanás"</strong> <span class="time-badge">30 min</span></td>
+                        <td>Eneas Dias<br><small>Parque dos Ipês - Jaguariúna SP</small></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Seção 5: Presidente e Leitor de A Sentinela -->
+        <div class="section">
+            <div class="section-title">
+                <div class="section-icon">📖</div>
+                <span>PRESIDENTE E LEITOR DE A SENTINELA</span>
+            </div>
+            
+            <div class="service-grid">
+                <div class="service-item">
+                    <div class="service-icon">👑</div>
+                    <div class="service-name">Presidente</div>
+                    <div class="service-person">(Designado)</div>
+                </div>
+                
+                <div class="service-item">
+                    <div class="service-icon">📖</div>
+                    <div class="service-name">Leitor</div>
+                    <div class="service-person">(Designado)</div>
+                </div>
+                
+                <div class="service-item">
+                    <div class="service-icon">🎤</div>
+                    <div class="service-name">Presidente</div>
+                    <div class="service-person">(Designado)</div>
+                </div>
+                
+                <div class="service-item">
+                    <div class="service-icon">📖</div>
+                    <div class="service-name">Leitor</div>
+                    <div class="service-person">(Designado)</div>
+                </div>
+                
+                <div class="service-item">
+                    <div class="service-icon">👑</div>
+                    <div class="service-name">Presidente</div>
+                    <div class="service-person">(Designado)</div>
+                </div>
+                
+                <div class="service-item">
+                    <div class="service-icon">📖</div>
+                    <div class="service-name">Leitor</div>
+                    <div class="service-person">(Designado)</div>
+                </div>
+                
+                <div class="service-item">
+                    <div class="service-icon">👑</div>
+                    <div class="service-name">Presidente</div>
+                    <div class="service-person">(Designado)</div>
+                </div>
+                
+                <div class="service-item">
+                    <div class="service-icon">📖</div>
+                    <div class="service-name">Leitor</div>
+                    <div class="service-person">(Designado)</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 15px; font-size: 13px; color: #666;">
+                <strong>📋 Observação:</strong> As designações específicas para cada domingo serão informadas semanalmente.
+            </div>
+        </div>
+        
+        <!-- Seção 6: Botão WhatsApp -->
+        <div class="section">
+            <a href="https://wa.me/5519987654321?text=Olá,%20gostaria%20de%20mais%20informações%20sobre%20as%20reuniões%20da%20Congregação%20Parque%20dos%20Ipês" 
+               class="whatsapp-button" target="_blank" id="whatsappBtn">
+                <i class="fab fa-whatsapp"></i> FALE CONOSCO NO WHATSAPP
+            </a>
+            
+            <div class="reminder-box" style="margin-top: 15px;">
+                <strong>✅ LEMBRETES IMPORTANTES:</strong><br>
+                • Horário das reuniões: Domingo 09:30<br>
+                • Estudo de A Sentinela: 10:10 (60 minutos)<br>
+                • Discursos fora: Sábados 19:00<br>
+                • Pontualidade é fundamental
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Congregação Parque dos Ipês - Jaguariúna SP</strong></p>
+            <p style="margin-top: 5px;">📍 Salão do Reino | 🕒 Domingo: 09:30</p>
+            <p style="margin-top: 5px;">
+                🌐 Mais informações: <a href="https://www.jw.org" target="_blank">JW.org</a> | 
+                📱 App: <strong>JW Library</strong>
+            </p>
+            <div class="auto-update">
+                <i class="fas fa-sync-alt"></i> Atualizado em: DEZ 2025 / JAN-FEV 2026
+            </div>
+        </div>
+    </div>
+    
+    <!-- VERSÃO TEXTO PARA COPIAR -->
+    <div class="whatsapp-container" style="margin-top: 20px; display: none;" id="textVersion">
+        <div class="header">
+            <h1>📋 VERSÃO TEXTO</h1>
+            <h2>Copie e cole no WhatsApp</h2>
+        </div>
+        
+        <div class="section">
+            <textarea id="whatsappText" readonly style="width: 100%; height: 500px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; font-family: monospace; font-size: 13px; resize: none; line-height: 1.4;"></textarea>
+            <button onclick="copyToClipboard()" style="width: 100%; padding: 12px; background: var(--primary-blue); color: white; border: none; border-radius: 8px; font-weight: 600; margin-top: 10px; cursor: pointer;">
+                <i class="fas fa-copy"></i> COPIAR TEXTO COMPLETO
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        // Dados das reuniões conforme o PDF
+        const meetingsData = {
+            congregation: "Congregação Parque dos Ipês - Jaguariúna SP",
+            period: "DEZEMBRO 2025 / JANEIRO-FEVEREIRO 2026",
+            sundayMeetings: [
+                {
+                    date: "07/12/2025",
+                    time: "09:30",
+                    talkTitle: "Será que os cristãos precisam guardar o sábado?",
+                    duration: "30 min",
+                    speaker: "Maurício Timóteo",
+                    location: "Parque dos Ipês - Jaguariúna SP"
+                },
+                {
+                    date: "14/12/2025",
+                    time: "09:30",
+                    talkTitle: "Quem está qualificado para governar a humanidade?",
+                    duration: "30 min",
+                    speaker: "Kleber Piza",
+                    location: "Jardim Triunfo - Pedreira SP",
+                    outsideTalk: {
+                        date: "13/12 (Sábado)",
+                        time: "19:00",
+                        speaker: "Ruan C. Dias #54",
+                        location: "Jardim Triunfo - Pedreira SP"
+                    }
+                },
+                {
+                    date: "21/12/2025",
+                    time: "09:30",
+                    talkTitle: "Você ama os prazeres ou a Deus?",
+                    duration: "30 min",
+                    speaker: "William Monteiro",
+                    location: "Jardim Triunfo - Pedreira SP",
+                    outsideTalk: {
+                        date: "20/12 (Sábado)",
+                        time: "19:00",
+                        speaker: "Marcos Santos #104",
+                        location: "Jardim Triunfo - Pedreira SP"
+                    }
+                },
+                {
+                    date: "28/12/2025",
+                    time: "09:30",
+                    talkTitle: "Sirva a Jeová com um coração alegre",
+                    duration: "30 min",
+                    speaker: "Michel Teixeira",
+                    location: "Jardim Triunfo - Pedreira SP",
+                    outsideTalk: {
+                        date: "27/12 (Sábado)",
+                        time: "19:00",
+                        speaker: "Robson Modesto #11",
+                        location: "Jardim Triunfo - Pedreira SP"
+                    }
+                }
+            ],
+            januaryMeetings: [
+                {
+                    date: "04/01/2026",
+                    time: "09:30",
+                    talkTitle: "Onde encontrar ajuda em tempos de aflição?",
+                    duration: "30 min",
+                    speaker: "Celso J. Costa",
+                    location: "Parque dos Ipês - Jaguariúna SP",
+                    outsideTalk: {
+                        date: "03/01 (Sábado)",
+                        time: "19:00",
+                        speaker: "Eduardo Gabriel #79",
+                        location: "Jardim Alvorada - Cosmópolis SP"
+                    }
+                },
+                {
+                    date: "11/01/2026",
+                    program: "Presidente de A Sentinela",
+                    responsible: "Marcos Santos"
+                },
+                {
+                    date: "18/01/2026",
+                    talkTitle: "Porque os cristãos verdadeiros tem que ser diferentes?",
+                    duration: "30 min",
+                    speaker: "Jader Brum",
+                    note: "Superintendente de circuito",
+                    additional: {
+                        program: "Discurso Final",
+                        duration: "30 min",
+                        speaker: "Jader Brum"
+                    }
+                },
+                {
+                    date: "25/01/2026",
+                    program: "Não designado",
+                    responsible: "Não designado",
+                    locationNote: "Jardim Alvorada - Cosmópolis SP",
+                    outsideTalk: {
+                        date: "24/01 (Sábado)",
+                        time: "19:00",
+                        speaker: "Marcos Santos #167",
+                        location: "Jardim Alvorada - Cosmópolis SP"
+                    }
+                }
+            ],
+            februaryMeetings: [
+                {
+                    date: "01/02/2026",
+                    program: "Presidente de A Sentinela",
+                    responsible: "Marcos Santos"
+                },
+                {
+                    date: "08/02/2026",
+                    program: "Presidente de A Sentinela",
+                    responsible: "Marcos Santos"
+                },
+                {
+                    date: "15/02/2026",
+                    talkTitle: "Não caia nas armadilhas de Satanás",
+                    duration: "30 min",
+                    speaker: "Eneas Dias",
+                    locationNote: "Parque dos Ipês - Jaguariúna SP"
+                }
+            ]
+        };
+        
+        // Atualização automática
+        document.addEventListener('DOMContentLoaded', function() {
+            const now = new Date();
+            const today = now.getDate();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            
+            // Destaque automático para a próxima reunião
+            highlightNextMeeting();
+            
+            // Atualiza data no footer
+            const options = { month: 'long', year: 'numeric' };
+            const dateString = now.toLocaleDateString('pt-BR', options);
+            document.querySelector('.auto-update').innerHTML = `<i class="fas fa-sync-alt"></i> Atualizado: ${dateString}`;
+            
+            // Gera versão texto para WhatsApp
+            generateWhatsAppText();
+            
+            // Mostra/Esconde versão texto ao clicar no título
+            document.querySelector('.header').addEventListener('click', function() {
+                const textVersion = document.getElementById('textVersion');
+                textVersion.style.display = textVersion.style.display === 'none' ? 'block' : 'none';
+            });
+            
+            // Atualiza o número do WhatsApp baseado no dispositivo
+            updateWhatsAppNumber();
+        });
+        
+        function highlightNextMeeting() {
+            const now = new Date();
+            const today = now.getDay(); // 0 = Domingo
+            
+            // Se for domingo, destaca a reunião de hoje
+            if (today === 0) {
+                const firstMeetingCard = document.querySelector('.meeting-card');
+                if (firstMeetingCard) {
+                    firstMeetingCard.classList.add('highlight');
+                }
+            }
+        }
+        
+        function generateWhatsAppText() {
+            let text = `*QUADRO DE REUNIÕES - DOMINGOS*\n`;
+            text += `*Congregação Parque dos Ipês - Jaguariúna SP*\n`;
+            text += `*DEZEMBRO 2025 / JANEIRO-FEVEREIRO 2026*\n\n`;
+            
+            text += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+            
+            // Reuniões de dezembro
+            text += `*DEZEMBRO 2025*\n\n`;
+            
+            meetingsData.sundayMeetings.forEach(meeting => {
+                text += `📅 *${meeting.date} - ${meeting.time}*\n`;
+                text += `🎙️ *${meeting.talkTitle}* (${meeting.duration})\n`;
+                text += `👨‍🏫 *Palestrante:* ${meeting.speaker}\n`;
+                text += `📍 *Local:* ${meeting.location}\n`;
+                
+                if (meeting.outsideTalk) {
+                    text += `📅 *Discurso Fora:* ${meeting.outsideTalk.date} - ${meeting.outsideTalk.time}\n`;
+                    text += `   • Palestrante: ${meeting.outsideTalk.speaker}\n`;
+                    text += `   • Local: ${meeting.outsideTalk.location}\n`;
+                }
+                
+                text += `\n`;
+            });
+            
+            text += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+            
+            // Reuniões de janeiro
+            text += `*JANEIRO 2026*\n\n`;
+            
+            meetingsData.januaryMeetings.forEach(meeting => {
+                text += `📅 *${meeting.date}*\n`;
+                
+                if (meeting.talkTitle) {
+                    text += `🎙️ *${meeting.talkTitle}* (${meeting.duration})\n`;
+                    text += `👨‍🏫 *Palestrante:* ${meeting.speaker}\n`;
+                    if (meeting.note) text += `   • ${meeting.note}\n`;
+                } else {
+                    text += `📋 *${meeting.program}*\n`;
+                    text += `👤 *Responsável:* ${meeting.responsible}\n`;
+                }
+                
+                if (meeting.locationNote) {
+                    text += `📍 *Local:* ${meeting.locationNote}\n`;
+                }
+                
+                if (meeting.additional) {
+                    text += `📋 *${meeting.additional.program}* (${meeting.additional.duration})\n`;
+                    text += `👨‍🏫 *Palestrante:* ${meeting.additional.speaker}\n`;
+                }
+                
+                if (meeting.outsideTalk) {
+                    text += `📅 *Discurso Fora:* ${meeting.outsideTalk.date} - ${meeting.outsideTalk.time}\n`;
+                    text += `   • Palestrante: ${meeting.outsideTalk.speaker}\n`;
+                    text += `   • Local: ${meeting.outsideTalk.location}\n`;
+                }
+                
+                text += `\n`;
+            });
+            
+            text += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+            
+            // Reuniões de fevereiro
+            text += `*FEVEREIRO 2026*\n\n`;
+            
+            meetingsData.februaryMeetings.forEach(meeting => {
+                text += `📅 *${meeting.date}*\n`;
+                
+                if (meeting.talkTitle) {
+                    text += `🎙️ *${meeting.talkTitle}* (${meeting.duration})\n`;
+                    text += `👨‍🏫 *Palestrante:* ${meeting.speaker}\n`;
+                    if (meeting.locationNote) text += `📍 *Local:* ${meeting.locationNote}\n`;
+                } else {
+                    text += `📋 *${meeting.program}*\n`;
+                    text += `👤 *Responsável:* ${meeting.responsible}\n`;
+                }
+                
+                text += `\n`;
+            });
+            
+            text += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+            
+            text += `*PRESIDENTE E LEITOR DE A SENTINELA:*\n`;
+            text += `👑 Presidente: (Designado)\n`;
+            text += `📖 Leitor: (Designado)\n\n`;
+            
+            text += `*INFORMAÇÕES IMPORTANTES:*\n`;
+            text += `✅ Horário das reuniões: Domingo 09:30\n`;
+            text += `✅ Estudo de A Sentinela: 10:10 (60 minutos)\n`;
+            text += `✅ Discursos fora: Sábados 19:00\n`;
+            text += `✅ Pontualidade é fundamental\n\n`;
+            
+            text += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+            
+            text += `📍 *Local:* Salão do Reino - Parque dos Ipês\n`;
+            text += `📞 *Contato:* (Designado)\n`;
+            text += `🌐 *Site:* JW.org | 📱 *App:* JW Library\n\n`;
+            
+            text += `_Atualizado em: ${new Date().toLocaleDateString('pt-BR')}_`;
+            
+            document.getElementById('whatsappText').value = text;
+        }
+        
+        function copyToClipboard() {
+            const textarea = document.getElementById('whatsappText');
+            textarea.select();
+            textarea.setSelectionRange(0, 99999);
+            
+            try {
+                const successful = document.execCommand('copy');
+                const btn = event.target;
+                const originalText = btn.innerHTML;
+                
+                if (successful) {
+                    btn.innerHTML = '<i class="fas fa-check"></i> TEXTO COPIADO!';
+                    btn.style.background = '#4CAF50';
+                    
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                        btn.style.background = '';
+                    }, 2000);
+                }
+            } catch (err) {
+                alert('Erro ao copiar texto. Selecione e copie manualmente (Ctrl+C).');
+            }
+        }
+        
+        function updateWhatsAppNumber() {
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const phoneNumber = "5519987654321";
+            
+            const whatsappBtn = document.getElementById('whatsappBtn');
+            const baseUrl = isMobile ? 'https://wa.me/' : 'https://web.whatsapp.com/send?phone=';
+            const urlParam = isMobile ? '' : '&text=';
+            
+            whatsappBtn.href = `${baseUrl}${phoneNumber}${urlParam}Olá,%20gostaria%20de%20mais%20informações%20sobre%20as%20reuniões%20da%20Congregação%20Parque%20dos%20Ipês`;
+        }
+        
+        // Atualiza a cada hora
+        setInterval(() => {
+            const now = new Date();
+            const timeElement = document.querySelector('.auto-update');
+            if (timeElement) {
+                timeElement.innerHTML = `<i class="fas fa-sync-alt"></i> Última atualização: ${now.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}`;
+            }
+        }, 3600000);
+    </script>
+</body>
+</html>
